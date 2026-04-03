@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Admin Dashboard</h2>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <a href="{{ url_for('admin.list_students') }}" class="text-decoration-none">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">Total Students</div>
+                <div class="card-body">
+                    <h5 class="card-title display-4">{{ total_students }}</h5>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a href="{{ url_for('admin.list_companies') }}" class="text-decoration-none">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">Total Companies</div>
+                <div class="card-body">
+                    <h5 class="card-title display-4">{{ total_companies }}</h5>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-header">Placement Drives</div>
+            <div class="card-body">
+                <h5 class="card-title display-4">{{ total_drives }}</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Pending Students -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                Pending Students
+            </div>
+            <div class="card-body">
+                {% if pending_students %}
+                <ul class="list-group">
+                    {% for student_user in pending_students %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ student_user.student_profile.full_name }}</strong><br>
+                            <small>{{ student_user.email }}</small>
+                        </div>
+                        <div>
+                            <a href="{{ url_for('admin.approve_student', user_id=student_user.id) }}"
+                                class="btn btn-sm btn-success">Approve</a>
+                            <a href="{{ url_for('admin.reject_student', user_id=student_user.id) }}"
+                                class="btn btn-sm btn-danger">Reject</a>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted">No pending student registrations.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <!-- Pending Companies -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                Pending Companies
+            </div>
+            <div class="card-body">
+                {% if pending_companies %}
+                <ul class="list-group">
+                    {% for company_user in pending_companies %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ company_user.company_profile.company_name }}</strong><br>
+                            <small>{{ company_user.email }}</small>
+                        </div>
+                        <div>
+                            <a href="{{ url_for('admin.approve_company', user_id=company_user.id) }}"
+                                class="btn btn-sm btn-success">Approve</a>
+                            <a href="{{ url_for('admin.reject_company', user_id=company_user.id) }}"
+                                class="btn btn-sm btn-danger">Reject</a>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted">No pending company registrations.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Pending Drives -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                Pending Placement Drives
+            </div>
+            <div class="card-body">
+                {% if pending_drives %}
+                <ul class="list-group">
+                    {% for drive in pending_drives %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <strong>{{ drive.job_title }}</strong>
+                            <span class="badge bg-light text-dark">{{ drive.company.company_name }}</span>
+                        </div>
+                        <p class="mb-1 text-muted small">{{ drive.job_description[:100] }}...</p>
+                        <div class="mt-2 text-end">
+                            <a href="{{ url_for('admin.approve_drive', drive_id=drive.id) }}"
+                                class="btn btn-sm btn-success">Approve</a>
+                            <a href="{{ url_for('admin.reject_drive', drive_id=drive.id) }}"
+                                class="btn btn-sm btn-danger">Reject</a>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted">No pending placement drives.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{{ url_for('admin.list_students') }}" class="btn btn-outline-primary">View All Students</a>
+</div>
+{% endblock %}

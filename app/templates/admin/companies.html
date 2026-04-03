@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>All Companies</h2>
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Company Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for company in companies %}
+                    <tr>
+                        <td>{{ company.user.id }}</td>
+                        <td>{{ company.company_name }}</td>
+                        <td>{{ company.user.email }}</td>
+                        <td>
+                            {% if company.user.is_active %}
+                            <span class="badge bg-success">Active</span>
+                            {% elif company.approval_status == 'blacklisted' %}
+                            <span class="badge bg-dark">Blacklisted</span>
+                            {% elif company.approval_status == 'pending' %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                            {% else %}
+                            <span class="badge bg-danger">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if company.approval_status != 'blacklisted' %}
+                            <a href="{{ url_for('admin.blacklist_company', user_id=company.user.id) }}"
+                                class="btn btn-sm btn-outline-danger"
+                                onclick="return confirm('Are you sure you want to blacklist this company?');">Blacklist</a>
+                            {% else %}
+                            <button class="btn btn-sm btn-outline-secondary" disabled>Blacklisted</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center">No companies found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

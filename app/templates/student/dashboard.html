@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2 class="mb-4">Available Placement Drives</h2>
+        {% if drives %}
+        {% for drive in drives %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">{{ drive.job_title }} <small class="text-muted">at {{ drive.company.company_name
+                        }}</small></h5>
+                <p class="card-text">{{ drive.job_description }}</p>
+                <ul class="list-inline">
+                    <li class="list-inline-item"><strong>Salary:</strong> {{ drive.salary }}</li>
+                    <li class="list-inline-item"><strong>Location:</strong> {{ drive.location }}</li>
+                    <li class="list-inline-item"><strong>Deadline:</strong> {{ drive.deadline.strftime('%Y-%m-%d') }}
+                    </li>
+                </ul>
+                {% if drive.id in applied_drive_ids %}
+                <button class="btn btn-secondary" disabled>Applied</button>
+                {% else %}
+                <a href="{{ url_for('student.apply_drive', drive_id=drive.id) }}" class="btn btn-primary">Apply Now</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="alert alert-info">No active placement drives available at the moment.</div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                My Profile
+            </div>
+            <div class="card-body text-center">
+                <h5>{{ current_user.student_profile.full_name }}</h5>
+                <p>CGPA: {{ current_user.student_profile.cgpa or 'N/A' }}</p>
+                <a href="{{ url_for('student.profile') }}" class="btn btn-outline-primary btn-sm">Edit Profile</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                Application History
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% for app in my_applications %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ app.drive.job_title }}</strong><br>
+                            <small class="text-muted">{{ app.drive.company.company_name }}</small>
+                        </div>
+                        <span
+                            class="badge bg-{% if app.status == 'selected' %}success{% elif app.status == 'rejected' %}danger{% elif app.status == 'shortlisted' %}info{% else %}secondary{% endif %}">
+                            {{ app.status|capitalize }}
+                        </span>
+                    </li>
+                    {% else %}
+                    <li class="list-group-item text-muted">No applications yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
