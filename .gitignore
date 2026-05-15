@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+*.pyo
+instance/
+*.db
+.env
+App_Dev_Project_Report.pdf
+*.tar
